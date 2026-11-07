@@ -1,0 +1,19 @@
+{
+  "threshold": 0.2688887270064362,
+  "features": [
+    "fixed_acidity",
+    "volatile_acidity",
+    "citric_acid",
+    "residual_sugar",
+    "chlorides",
+    "free_sulfur_dioxide",
+    "total_sulfur_dioxide",
+    "density",
+    "pH",
+    "sulphates",
+    "alcohol",
+    "is_red"
+  ],
+  "selection": "Обычная LR; порог выбран по F1 на внутренней валидации train",
+  "random_state": 42
+}
