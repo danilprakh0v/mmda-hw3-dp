@@ -1,19 +1,31 @@
 [theme]
-base = "light"
+font = "sans serif"
+headingFont = "serif"
+baseRadius = "large"
+buttonRadius = "large"
+showWidgetBorder = true
+
+[theme.light]
 primaryColor = "#A64D60"
 backgroundColor = "#FCF9F5"
 secondaryBackgroundColor = "#F4E8E6"
 textColor = "#38272C"
-font = "sans serif"
-headingFont = "serif"
-borderColor = "#E8D6D3"
-baseRadius = "large"
-buttonRadius = "full"
-showWidgetBorder = true
+borderColor = "#E5D3D3"
 
-[theme.sidebar]
+[theme.light.sidebar]
 backgroundColor = "#F4E8E6"
 secondaryBackgroundColor = "#FCF9F5"
+
+[theme.dark]
+primaryColor = "#DF9BAC"
+backgroundColor = "#1D171B"
+secondaryBackgroundColor = "#2D2229"
+textColor = "#F4E7EA"
+borderColor = "#513C47"
+
+[theme.dark.sidebar]
+backgroundColor = "#271E25"
+secondaryBackgroundColor = "#362832"
 
 [browser]
 gatherUsageStats = false

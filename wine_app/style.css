@@ -1,43 +1,42 @@
-/* Мягкие винные оттенки, спокойные отступы и компактные графики. */
-.stApp { background: #FCF9F5; color: #38272C; }
-[data-testid="stHeader"] { background: #FCF9F5; }
-[data-testid="stSidebar"] { background: #F4E8E6; border-right: 1px solid #E8D6D3; }
-[data-testid="stMainBlockContainer"] { max-width: 1300px; padding-top: 2.5rem; padding-bottom: 2rem; }
-[data-testid="stSidebarUserContent"] { padding-top: 2.25rem; }
-h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif !important; font-weight: 500 !important; color: #542B38; }
-[data-testid="stCaptionContainer"] { color: #785F65; }
+/* Цветовая схема наследуется от выбранной темы Streamlit. */
+[data-testid="stMainBlockContainer"] { max-width: 1320px; padding-top: 2.3rem; padding-bottom: 2rem; }
+[data-testid="stSidebarUserContent"] { padding-top: 2rem; }
+h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif !important; font-weight: 500 !important; }
 [data-testid="stWidgetLabel"] p { font-size: .88rem; font-weight: 500; }
 [data-testid="stNumberInputContainer"] { border-radius: 10px; }
 [data-testid="stNumberInputContainer"] input { font-variant-numeric: tabular-nums; }
-[data-testid="stMetricValue"] { font-family: Georgia, serif; color: #783B4C; font-weight: 400; }
-[data-testid="stMetricLabel"] { color: #785F65; }
-[data-baseweb="tab-list"] { gap: 1.5rem; border-bottom: 1px solid #E8D6D3; margin-bottom: 1rem; }
+[data-testid="stMetricValue"] { font-family: Georgia, serif; font-weight: 400; }
+[data-testid="stCaptionContainer"] { opacity: .85; }
+[data-baseweb="tab-list"] { gap: 1.3rem; margin-bottom: 1rem; }
 [data-baseweb="tab"] { padding: .7rem 0; background: transparent; }
-[data-baseweb="tab"][aria-selected="true"] { color: #963F53; }
-[data-baseweb="tab-highlight"] { background-color: #A64D60; }
 .st-key-wine_form, .st-key-wine_result, .st-key-matrix_panel,
 .st-key-selection_panel, .st-key-roc_panel, .st-key-pr_panel,
 .st-key-upload_panel, .st-key-coefficients_panel {
-    padding: 1.35rem; border: 1px solid #E8D6D3; border-radius: 18px; background: #FFFEFC;
+    padding: 1.3rem; border: 1px solid rgba(165, 110, 125, .32); border-radius: 16px;
 }
-.st-key-wine_result { background: #F8EEEE; border-color: #E3C4C8; }
-.st-key-wine_result [data-testid="stMetricValue"] { font-size: 3.3rem; }
-.wine-header { display: flex; align-items: center; gap: 1.4rem; margin: .2rem 0 1.6rem; }
-.wine-header .wine-mark { width: 76px; height: 96px; flex-shrink: 0; }
-.wine-header h1 { margin: 0; padding: .12rem 0 .4rem; font-size: clamp(2rem, 3.3vw, 3rem); letter-spacing: -.035em; line-height: 1.15; }
-.wine-header p { margin: 0; color: #785F65; max-width: 40rem; font-size: .96rem; line-height: 1.65; }
-.wine-kicker { font-size: .68rem; letter-spacing: .19em; text-transform: uppercase; color: #9B5264; font-weight: 600; margin-bottom: .6rem; }
-.sidebar-brand { font: 1.75rem Georgia, serif; color: #713747; margin: 0 0 .4rem; }
-.sidebar-note { color: #785F65; font-size: .86rem; line-height: 1.65; }
-.result-label { display: inline-block; color: #783B4C; background: #EEDBDF; padding: .45rem .8rem; border-radius: 100px; font-size: .87rem; font-weight: 600; margin: .5rem 0; }
-.result-label.selected { color: #FCF9F5; background: #93475B; }
-.result-copy { color: #785F65; line-height: 1.65; font-size: .9rem; margin-bottom: .3rem; }
-.wine-footer { border-top: 1px solid #E8D6D3; margin-top: 2rem; padding-top: 1rem; color: #8B7379; font-size: .76rem; }
-.wine-footer a { color: #8A4356; }
-@media (max-width: 700px) {
-    [data-testid="stMainBlockContainer"] { padding-top: 1.5rem; }
-    .wine-header { gap: .8rem; }
-    .wine-header .wine-mark { width: 52px; height: 72px; }
-    [data-baseweb="tab-list"] { gap: 1rem; }
+.st-key-wine_result { background: rgba(166, 77, 96, .075); }
+.st-key-wine_result [data-testid="stMetricValue"] { font-size: clamp(2.1rem, 3.3vw, 3.1rem); }
+.wine-header { display: flex; align-items: center; gap: 1.15rem; margin: .2rem 0 1.6rem; }
+.wine-mark { font-size: 3.6rem; line-height: 1; flex-shrink: 0; }
+.wine-header h1 { margin: 0; padding: .12rem 0 .4rem; font-size: clamp(2rem, 3.3vw, 3rem); letter-spacing: -.035em; line-height: 1.2; }
+.wine-header p { margin: 0; opacity: .8; max-width: 40rem; font-size: .96rem; line-height: 1.65; }
+.wine-kicker { font-size: .68rem; letter-spacing: .15em; text-transform: uppercase; font-weight: 600; margin-bottom: .6rem; opacity: .8; }
+.sidebar-brand { font: 1.65rem Georgia, serif; margin: 0 0 .4rem; }
+.sidebar-note { opacity: .8; font-size: .87rem; line-height: 1.65; }
+.result-label { display: inline-block; background: rgba(166, 77, 96, .14); padding: .5rem .8rem; border-radius: 10px; font-size: .87rem; font-weight: 600; margin: .7rem 0 .5rem; }
+.result-label.selected { background: light-dark(#93475B, #DF9BAC); color: light-dark(#FFFAFB, #281C23); }
+.result-copy { opacity: .85; line-height: 1.65; font-size: .9rem; margin-bottom: .3rem; }
+.probability-track { height: 6px; border-radius: 8px; background: rgba(166, 77, 96, .18); overflow: hidden; margin: .4rem 0; }
+.probability-fill { height: 100%; border-radius: inherit; background: #A64D60; background: light-dark(#A64D60, #DF9BAC); }
+.wine-footer { border-top: 1px solid rgba(165, 110, 125, .32); margin-top: 2rem; padding-top: 1rem; opacity: .8; font-size: .76rem; }
+.wine-footer a { color: inherit; text-underline-offset: 3px; }
+@media (max-width: 900px) {
     .st-key-wine_form, .st-key-wine_result { padding: 1rem; }
+    [data-testid="stMainBlockContainer"] { padding-left: 1.2rem; padding-right: 1.2rem; }
+}
+@media (max-width: 700px) {
+    [data-testid="stMainBlockContainer"] { padding-top: 1.3rem; }
+    .wine-header { gap: .7rem; }
+    .wine-mark { font-size: 2.6rem; }
+    [data-baseweb="tab-list"] { gap: .85rem; }
 }

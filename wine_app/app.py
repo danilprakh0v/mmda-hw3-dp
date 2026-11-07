@@ -1,6 +1,7 @@
 """ДЗ-3: оценка вина и исследование качества логистической регрессии."""
 from pathlib import Path
 import json
+from textwrap import dedent
 
 import joblib
 import matplotlib.pyplot as plt
@@ -12,13 +13,27 @@ from sklearn import metrics
 
 BASE_DIR = Path(__file__).resolve().parent
 st.set_page_config(page_title='Вино в подборку', page_icon='🍷', layout='wide')
-st.html('<style>' + (BASE_DIR / 'style.css').read_text(encoding='utf-8') + '</style>')
 
-WINE = '#A64D60'
-INK = '#542B38'
-ROSE = '#D8A5AD'
-PAPER = '#FFFEFC'
-GRID = '#EADDDD'
+
+def markup(content):
+    # Статическая разметка без отдельного HTML-компонента и JavaScript.
+    st.markdown(dedent(content).strip(), unsafe_allow_html=True)
+
+
+markup('<style>' + (BASE_DIR / 'style.css').read_text(encoding='utf-8') + '</style>')
+
+PALETTES = {
+    'light': {'wine': '#A64D60', 'ink': '#542B38', 'rose': '#C28192',
+              'paper': '#FCF9F5', 'grid': '#E5D3D3', 'muted': '#785F65',
+              'negative': '#D4A5AA', 'heat_low': '#FAEEEE', 'heat_high': '#6E3042'},
+    'dark': {'wine': '#DF9BAC', 'ink': '#F4E7EA', 'rose': '#B47B8C',
+             'paper': '#1D171B', 'grid': '#513C47', 'muted': '#C5ACB6',
+             'negative': '#926C7D', 'heat_low': '#34232C', 'heat_high': '#E0A0B1'},
+}
+# Тип приходит от браузера: настройки выбранной темы не общие для пользователей.
+theme_type = st.context.theme.type or 'light'
+palette = PALETTES.get(theme_type, PALETTES['light'])
+WINE, INK, ROSE, PAPER, GRID = (palette[name] for name in ['wine', 'ink', 'rose', 'paper', 'grid'])
 
 @st.cache_resource
 def load_model(path, revision):
@@ -92,42 +107,33 @@ STEPS = {'density': 0.0001, 'chlorides': 0.001, 'volatile_acidity': 0.001,
          'citric_acid': 0.001, 'free_sulfur_dioxide': 1.0, 'total_sulfur_dioxide': 1.0,
          'alcohol': 0.1, 'pH': 0.01}
 
-GLASS = '''<svg class="wine-mark" viewBox="0 0 80 100" aria-hidden="true"
-     xmlns="http://www.w3.org/2000/svg" fill="none">
-  <path d="M19 12h42l3 27c2 18-8 30-24 30S14 57 16 39l3-27Z" fill="#F1DCDF"/>
-  <path d="M17 40c12-5 20 6 32 1 6-3 10-3 15-2 2 18-8 30-24 30S15 57 17 40Z" fill="#BD7383"/>
-  <path d="M19 12h42l3 27c2 18-8 30-24 30S14 57 16 39l3-27ZM40 69v22M25 92h30"
-        stroke="#884254" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="m24 21-1 15" stroke="#FFFEFC" stroke-width="3" stroke-linecap="round"/>
-</svg>'''
+GLASS = '<span class="wine-mark" aria-hidden="true">🍷</span>'
 
-st.html(f'''<header class="wine-header">{GLASS}<div>
+
+markup(f'''<header class="wine-header">{GLASS}<div>
   <div class="wine-kicker">Заметки сомелье</div>
   <h1>Вино в подборку</h1>
   <p>От лабораторных показателей к следующей дегустации.</p>
 </div></header>''')
 
 
-def reset_threshold():
-    st.session_state['threshold'] = float(config['threshold'])
 
 
 with st.sidebar:
-    st.html('<div class="wine-kicker">Маленькая винная карта</div>'
+    markup('<div class="wine-kicker">Маленькая винная карта</div>'
             '<div class="sidebar-brand">Правила отбора</div>')
     st.caption('Насколько строгой будет подборка?')
     threshold = st.slider('Порог рекомендации', min_value=0.0, max_value=1.0,
                           value=float(config['threshold']), step=0.001,
                           format='%.3f', key='threshold')
-    st.button('Вернуть выбранный порог', on_click=reset_threshold, key='reset_threshold',
-              type='tertiary')
     st.caption(f"Порог из валидации: {config['threshold']:.3f}")
+    st.caption('Светлая и тёмная темы доступны в меню ⋮ вверху справа.')
     st.divider()
     st.markdown('**Выше порог — строже отбор.**')
     st.write('В подборку попадёт меньше вин. При снижении порога выбор станет шире, '
              'но возрастёт риск включить посредственное вино.')
     st.divider()
-    st.html('<div class="wine-kicker">Что считаем хорошим вином</div>'
+    markup('<div class="wine-kicker">Что считаем хорошим вином</div>'
             '<div class="sidebar-brand">7 баллов и выше</div>'
             '<p class="sidebar-note">Модель оценивает вероятность такой экспертной оценки. '
             'Окончательное решение остаётся за сомелье.</p>')
@@ -141,7 +147,7 @@ def chart_style():
     return plt.rc_context({
         'figure.facecolor': PAPER, 'axes.facecolor': PAPER,
         'text.color': INK, 'axes.labelcolor': INK,
-        'xtick.color': '#785F65', 'ytick.color': '#785F65',
+        'xtick.color': palette['muted'], 'ytick.color': palette['muted'],
         'axes.edgecolor': GRID, 'axes.spines.top': False, 'axes.spines.right': False,
         'grid.color': GRID, 'grid.alpha': 0.65,
         'font.size': 10, 'axes.titlesize': 12, 'axes.labelsize': 10,
@@ -157,10 +163,10 @@ with single_tab:
             st.subheader('Паспорт вина')
             st.caption('Введите результаты лабораторного анализа.')
             values = {'is_red': int(st.toggle('Красное вино', value=False))}
-            columns = st.columns(3, gap='medium')
+            columns = st.columns(2, gap='medium')
             numeric_features = [feature for feature in features if feature != 'is_red']
             for i, feature in enumerate(numeric_features):
-                with columns[i % 3]:
+                with columns[i % 2]:
                     series = X_test[feature]
                     low, high, median = map(float, [series.min(), series.max(), series.median()])
                     values[feature] = st.number_input(
@@ -173,16 +179,19 @@ with single_tab:
     probability = float(model.predict_proba(pd.DataFrame([values], columns=features))[0, 1])
     with result_column:
         with st.container(key='wine_result'):
-            st.html('<div class="wine-kicker">Результат оценки</div>')
+            markup('<div class="wine-kicker">Результат оценки</div>')
             st.subheader('Красное вино' if values['is_red'] else 'Белое вино')
             st.metric('Вероятность хорошего вина', f'{probability:.1%}')
-            st.progress(probability)
+            markup(f'<div class="probability-track" role="progressbar" '
+                   f'aria-label="Вероятность хорошего вина" aria-valuemin="0" '
+                   f'aria-valuemax="100" aria-valuenow="{probability * 100:.1f}">'
+                   f'<div class="probability-fill" style="width:{probability * 100:.3f}%"></div></div>')
             selected = probability >= threshold
             decision = 'Включаем в подборку' if selected else 'Пока вне подборки'
             css_class = 'result-label selected' if selected else 'result-label'
-            st.html(f'<span class="{css_class}">{decision}</span>')
+            markup(f'<span class="{css_class}">{decision}</span>')
             comparison = 'не ниже' if selected else 'ниже'
-            st.html(f'<p class="result-copy">Вероятность {probability:.1%} {comparison} '
+            markup(f'<p class="result-copy">Вероятность {probability:.1%} {comparison} '
                     f'порога {threshold:.1%}.</p>')
             st.divider()
             st.caption('Измените показатели вина или порог слева — оценка обновится автоматически.')
@@ -207,7 +216,7 @@ with metrics_tab:
         st.markdown('**Матрица ошибок**')
         with chart_style():
             fig, ax = plt.subplots(figsize=(4.8, 3.5))
-            cmap = LinearSegmentedColormap.from_list('wine', ['#FAEEEE', '#A64D60', '#6E3042'])
+            cmap = LinearSegmentedColormap.from_list('wine', [palette['heat_low'], WINE, palette['heat_high']])
             metrics.ConfusionMatrixDisplay.from_predictions(
                 y_test, pred, labels=[0, 1], display_labels=['Остальные', 'Хорошие'],
                 ax=ax, cmap=cmap, colorbar=False)
@@ -286,8 +295,8 @@ with weights_tab:
         with chart_style():
             fig, ax = plt.subplots(figsize=(7, 4.8))
             ax.barh([LABELS[name] for name in coefficients.index], coefficients.values,
-                    color=np.where(coefficients >= 0, WINE, '#D4A5AA'), height=0.65)
-            ax.axvline(0, color='#B99CA4', lw=1)
+                    color=np.where(coefficients >= 0, WINE, palette['negative']), height=0.65)
+            ax.axvline(0, color=palette['muted'], lw=1)
             ax.set_xlabel('Коэффициент при стандартизированном признаке')
             ax.grid(axis='x', alpha=0.4); ax.set_axisbelow(True)
             fig.tight_layout(); st.pyplot(fig, alt='Коэффициенты модели, отсортированные по значению'); plt.close(fig)
@@ -308,6 +317,6 @@ with weights_tab:
                  'например, сахар, плотность и алкоголь. Поэтому коэффициент описывает '
                  'вклад признака при фиксированных остальных показателях.')
 
-st.html('<footer class="wine-footer">Wine Quality · Математические методы анализа данных · '
+markup('<footer class="wine-footer">Wine Quality · Математические методы анализа данных · '
         '<a href="https://github.com/danilprakh0v/mmda-hw3-dp" target="_blank" rel="noopener noreferrer">'
         'Код и исследование ↗</a></footer>')
